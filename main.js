@@ -1,9 +1,9 @@
-exports.scour = function(folderPath, siteCode){
+exports.scourFolder = function(folderPath, siteCode){
 	var fs = require('fs')
 	, _ = require('lodash')
 	, path = require('path');
 
-	fs.exists(argv.dir, function(exists){ 
+	fs.exists(folderPath, function(exists){ 
 		if(!exists) throw { message:"Folder does not exist" };
 
 		processProjectDirectory(folderPath);
@@ -25,8 +25,8 @@ function processProjectDirectory(folderPath){
 			findAndReplace(file,trackingPixelPattern,"","tracking pixel");
 		}
 
-		if((path.extname(file) === '.js' || path.extname(file) === '.xml') && argv.siteCode){
-			var pattern = RegExp(argv.siteCode);
+		if((path.extname(file) === '.js' || path.extname(file) === '.xml') && siteCode){
+			var pattern = RegExp(siteCode);
 			findAndReplace(file,pattern,"","site code");
 		}
 	});

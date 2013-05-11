@@ -4,21 +4,33 @@
   "version": "0.0.1",
   "author": "Ryan Billingsley <ryanbbillingsley@gmail.com>",
   "description": "parses html files to remove click tags",
-  "license":"MIT",
+  "license": "MIT",
   "dependencies": {
-    "coffee-script": "*",
-    "optimist":"*",
-    "lodash":"*",
-    "findit":"*"
+    "lodash": "*",
+    "findit": "*"
   },
   "engines": {
     "node": ">=0.10"
   },
   "devDependencies": {
-    "jasmine-node":"*",
+    "jasmine-node": "*",
     "grunt": "~0.4.1",
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-contrib-coffee": "~0.7.0",
     "grunt-contrib-jasmine": "~0.4.2"
-  }
+  },
+  "readmeFilename": "Readme.md",
+  "gitHead": "9e60b52732f8bea23fa2a66a39ecf06771f930c2",
+  "main": "main.js",
+  "scripts": {
+    "test": "jasmine-node . --color"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/baminteractive/scour.git"
+  },
+  "keywords": [
+    "omniture",
+    "tracking"
+  ]
 }
