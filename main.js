@@ -1,7 +1,9 @@
-exports.scourFolder = function(folderPath, siteCode){
-	var fs = require('fs')
+var fs = require('fs')
 	, _ = require('lodash')
 	, path = require('path');
+
+exports.scourFolder = function(folderPath, siteCode){
+	
 
 	fs.exists(folderPath, function(exists){ 
 		if(!exists) throw { message:"Folder does not exist" };
