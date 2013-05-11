@@ -1,9 +1,10 @@
 {
   "name": "scour",
-  "preferGlobal": true,
+  "preferGlobal": false,
   "version": "0.0.1",
   "author": "Ryan Billingsley <ryanbbillingsley@gmail.com>",
   "description": "parses html files to remove click tags",
+  "license":"MIT",
   "dependencies": {
     "coffee-script": "*",
     "optimist":"*",

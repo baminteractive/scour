@@ -1,22 +1,16 @@
-var fs = require('fs')
+exports.scour = function(folderPath, siteCode){
+	var fs = require('fs')
 	, _ = require('lodash')
-	, path = require('path')
-	, argv = require('optimist')
-		.usage("Usage: $0 --dir [project directory] --siteCode [omniture site code] \n\n Cleans out data-clicktags, tracking pixels, and site codes")
-		.demand(['dir'])
-		.argv;
+	, path = require('path');
 
-var start = function(){
-	console.log("Started: "+argv.dir);
 	fs.exists(argv.dir, function(exists){ 
-		console.log(exists ? "Found directory" : "Directory not found!!!!");
-		if(!exists) process.exit(404);
+		if(!exists) throw { message:"Folder does not exist" };
 
-		processProjectDirectory(argv.dir);
+		processProjectDirectory(folderPath);
 	});
-};
+}
 
-var processProjectDirectory = function(folderPath){
+function processProjectDirectory(folderPath){
 		//This sets up the file finder
 	var finder = require('findit').find(folderPath);
 
@@ -57,6 +51,3 @@ function findAndReplace(file,pattern,replace,display){
 		}
 	});
 }
-
-
-start();
