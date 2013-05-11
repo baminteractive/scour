@@ -9,3 +9,8 @@ node app.js --dir [project directory] --siteCode [[omniture site code]]
 ```
 
 Scour uses regular exporessions to process each file in the project folder and replace those elments with appropriate empty elements.
+
+## Installation
+
+* npm install
+* node app.js --dir /some/dir --siteCode someSiteCode
