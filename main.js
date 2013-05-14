@@ -33,6 +33,10 @@ function Scour(){
 					self.findAndReplace(file,pattern,"","site code",function(err,changedfile){ self.emit("file",changedfile); });
 				}
 			});
+
+			finder.on('end',function(){
+				self.emit('end');
+			})
 		});
 	}
 

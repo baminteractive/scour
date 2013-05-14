@@ -1,7 +1,7 @@
 {
   "name": "scour",
   "preferGlobal": false,
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "Ryan Billingsley <ryanbbillingsley@gmail.com>",
   "description": "parses html files to remove click tags",
   "license": "MIT",
