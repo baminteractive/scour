@@ -1,37 +1,38 @@
 var fs = require('fs')
 		, _ = require('lodash')
-		, path = require('path');
+		, path = require('path')
+		, events = require('events')
+		, util = require('util');
 
 function Scour(){
 
+	events.EventEmitter.call(this);
+
 	this.scourFolder = function(folderPath, siteCode){
+		var self = this
+			, finder = require('findit').find(folderPath);
 
 		fs.exists(folderPath, function(exists){ 
-			if(!exists) throw { message:"Folder does not exist" };
+			if(!exists) throw "Folder does not exist";
 
-			processProjectDirectory(folderPath,siteCode);
-		});
-	}
+			//This listens for files found
+			finder.on('file', function (file) {
+				// Check if file is cshtml
+				if(path.extname(file) === '.cshtml'){
+					var clickTagPattern = /( ?data-clicktag=['"].+?['"])( |>)/g;
+					self.findAndReplace(file,clickTagPattern,"$2","click tag",function(err,file){ 
+						self.emit("file",file);
+					});
 
-	this.processProjectDirectory = function(folderPath,siteCode){
-			//This sets up the file finder
-		var finder = require('findit').find(folderPath);
+					var trackingPixelPattern = /<img.*((width|height)=['"]0['"] ?){2}.*\/>/g;
+					self.findAndReplace(file,trackingPixelPattern,"","tracking pixel",function(err,changedfile){ self.emit("file",changedfile); });
+				}
 
-		//This listens for files found
-		finder.on('file', function (file) {
-			// Check if file is cshtml
-			if(path.extname(file) === '.cshtml'){
-				var clickTagPattern = /( ?data-clicktag=['"].+?['"])( |>)/g;
-				findAndReplace(file,clickTagPattern,"$2","click tag");
-
-				var trackingPixelPattern = /<img.*((width|height)=['"]0['"] ?){2}.*\/>/g;
-				findAndReplace(file,trackingPixelPattern,"","tracking pixel",function(){});
-			}
-
-			if((path.extname(file) === '.js' || path.extname(file) === '.xml') && siteCode.length > 0){
-				var pattern = RegExp(siteCode);
-				findAndReplace(file,pattern,"","site code",function(){});
-			}
+				if((path.extname(file) === '.js' || path.extname(file) === '.xml') && siteCode.length > 0){
+					var pattern = RegExp(siteCode);
+					self.findAndReplace(file,pattern,"","site code",function(err,changedfile){ self.emit("file",changedfile); });
+				}
+			});
 		});
 	}
 
@@ -47,12 +48,15 @@ function Scour(){
 				fs.writeFile(file,cleanedText,function(err){
 					if(err) throw err;
 
-					console.log("Saved " + file);
 					callback(err,file);
 				});
+			}else{
+				callback(err,"",false);
 			}
 		});
 	}
 }
+
+util.inherits(Scour,events.EventEmitter);
 
 exports.scour = new Scour();
