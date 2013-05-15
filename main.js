@@ -9,7 +9,7 @@ function Scour(){
 
 	events.EventEmitter.call(this);
 
-	this.scourFolder = function(folderPath, siteCode, removeGit){
+	this.scourFolder = function(folderPath, siteCode){
 		var self = this;
 
 		fs.exists(folderPath, function(exists){ 

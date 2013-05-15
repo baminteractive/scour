@@ -2,15 +2,26 @@
 
 Scour will remove data-clicktags, tracking pixels, and site codes from all the files in a folder.
 
-## Usage
-
-```
-node app.js --dir [project directory] --siteCode [[omniture site code]]
-```
-
-Scour uses regular exporessions to process each file in the project folder and replace those elments with appropriate empty elements.
-
 ## Installation
 
-* npm install
-* node app.js --dir /some/dir --siteCode someSiteCode
+Scour is installed with `npm` the node package manager.
+
+`npm install scour`
+
+## Usage
+
+```javascript
+
+var scour = require('scour').scour;
+
+scour.on('file',function(file){
+	if(file !== "") console.log("Saved " + file);
+});
+
+scour.on('end',function(){
+	console.log("Done scouring");
+});
+
+scour.scourFolder("/foo/bar","sitecode");
+
+```
