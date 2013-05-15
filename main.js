@@ -2,18 +2,20 @@ var fs = require('fs')
 		, _ = require('lodash')
 		, path = require('path')
 		, events = require('events')
-		, util = require('util');
+		, util = require('util')
+		, findit = require('findit');
 
 function Scour(){
 
 	events.EventEmitter.call(this);
 
 	this.scourFolder = function(folderPath, siteCode, removeGit){
-		var self = this
-			, finder = require('findit').find(folderPath);
+		var self = this;
 
 		fs.exists(folderPath, function(exists){ 
 			if(!exists) throw "Folder does not exist";
+
+			var finder = findit.find(folderPath);
 
 			//This listens for files found
 			finder.on('file', function (file) {
@@ -31,19 +33,6 @@ function Scour(){
 				if((path.extname(file) === '.js' || path.extname(file) === '.xml') && siteCode.length > 0){
 					var pattern = RegExp(siteCode);
 					self.findAndReplace(file,pattern,"","site code",function(err,changedfile){ self.emit("file",changedfile); });
-				}
-			});
-
-			finder.on('folder',function(folder){
-				if(!removeGit){
-					self.emit('git',{removed:false});
-				}else{
-					var gitPattern = /.git/;
-					if(gitPattern.test(folder)){
-						fs.rmdir(folder,function(){
-							self.emit('git',{removed:true});
-						})
-					}
 				}
 			});
 
