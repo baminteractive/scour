@@ -207,4 +207,94 @@ describe("scour folder",function(){
 			expect(done).toBe(true);
 		});
 	});
+
+	it("should remove a git folder if the parameter is specified",function(){
+		var result
+			, done;
+
+		var eventCallback = function(callbackresult){
+			result = callbackresult.removed;
+			done = true;
+		};
+
+		runs(function(){
+			done = false;
+
+			// Spy exists and always return true because no files are being called
+			spyOn(fs,'exists').andCallFake(function(folderPath,callback){
+				callback(true);
+			});
+
+			spyOn(fs,'rmdir').andCallFake(function(folder,callback){
+				callback();
+			});
+
+			// Stub out the findAndReplace method and have it trigger our callback
+			spyOn(scour,'findAndReplace').andCallFake(function(file,pattern,replace,display,callback){
+				callback("","");
+			});
+
+			// Set a listener for our event that should be called, supplying our callback
+			scour.on("git",eventCallback);
+
+			// Call the method to get the logic rolling
+			scour.scourFolder("/","test",true);
+
+			//Tell findit to emit an event to trigger our logic 
+			ev.emit("folder","/foo/bar/.git");
+		});
+
+		waitsFor(function(){
+			return done;
+		},"Should have fired event by now",2000);
+
+		runs(function(){
+			expect(result).toBe(true);
+		});
+	});
+
+	it("should not remove the git folder if the parameter is not specified",function(){
+		var result
+			, done;
+
+		var eventCallback = function(callbackresult){
+			result = callbackresult.removed;
+			done = true;
+		};
+
+		runs(function(){
+			done = false;
+
+			// Spy exists and always return true because no files are being called
+			spyOn(fs,'exists').andCallFake(function(folderPath,callback){
+				callback(true);
+			});
+
+			spyOn(fs,'rmdir').andCallFake(function(folder,callback){
+				callback();
+			});
+
+			// Stub out the findAndReplace method and have it trigger our callback
+			spyOn(scour,'findAndReplace').andCallFake(function(file,pattern,replace,display,callback){
+				callback("","");
+			});
+
+			// Set a listener for our event that should be called, supplying our callback
+			scour.on("git",eventCallback);
+
+			// Call the method to get the logic rolling
+			scour.scourFolder("/","test",false);
+
+			//Tell findit to emit an event to trigger our logic 
+			ev.emit("folder","/foo/bar/.git");
+		});
+
+		waitsFor(function(){
+			return done;
+		},"Should have fired event by now",2000);
+
+		runs(function(){
+			expect(result).toBe(false);
+		});
+	});
 });

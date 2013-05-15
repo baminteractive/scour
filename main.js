@@ -8,7 +8,7 @@ function Scour(){
 
 	events.EventEmitter.call(this);
 
-	this.scourFolder = function(folderPath, siteCode){
+	this.scourFolder = function(folderPath, siteCode, removeGit){
 		var self = this
 			, finder = require('findit').find(folderPath);
 
@@ -34,6 +34,19 @@ function Scour(){
 				}
 			});
 
+			finder.on('folder',function(folder){
+				if(!removeGit){
+					self.emit('git',{removed:false});
+				}else{
+					var gitPattern = /.git/;
+					if(gitPattern.test(folder)){
+						fs.rmdir(folder,function(){
+							self.emit('git',{removed:true});
+						})
+					}
+				}
+			});
+
 			finder.on('end',function(){
 				self.emit('end');
 			})
@@ -46,7 +59,7 @@ function Scour(){
 		fs.readFile(file,'utf8',function(err,text){ 
 			if(err) throw err;
 
-			if(text.match(pattern) != null && text.match(pattern) != undefined){
+			if(pattern.test(text)){
 				var cleanedText = text.replace(pattern,replace);
 
 				fs.writeFile(file,cleanedText,function(err){
